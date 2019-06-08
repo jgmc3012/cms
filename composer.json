@@ -8,6 +8,7 @@
         "twig/twig": "^2.11",
         "zendframework/zend-diactoros": "^2.1",
         "aura/router": "^3.1",
-        "illuminate/database": "^5.8"
+        "illuminate/database": "^5.8",
+        "respect/validation": "^1.1"
     }
 }
