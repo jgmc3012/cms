@@ -1,0 +1,29 @@
+{% extends 'dashboard.twig' %}
+{% block page_content %}
+  <div class="w3-container w3-blue">
+    <h1>Usuarios</h1>
+  </div>
+  <table class="w3-table w3-bordered">
+    {% for user in users %}
+        <tr class="">
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}
+          <i class="fa fa-trash w3-right">  </i></td>
+        </tr>
+    {% endfor %}
+  </table>
+  <button onclick="accordion('addUser')" class="w3-button w3-block w3-teal">Agregar un nuevo usuario</button>
+  <div class="w3-hide" id="addUser">
+    <form class="" action="/dashboard/add-user" method="post">
+      <input class="w3-input" type="text" placeholder="Nombres" name="user_first_name">
+      <input class="w3-input" type="text" placeholder="Apellidos" name="user_last_name">
+      <input class="w3-button w3-block" type="submit" class="w3-button" value="Agregar">
+    </form>
+  </div>
+  {% if response != '' %}
+    <div class="w3-panel w3-yellow">
+        <h2>Notificacion</h2>
+        <p>{{response}}</p>
+    </div>
+  {% endif %}
+{% endblock %}

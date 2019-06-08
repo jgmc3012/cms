@@ -7,7 +7,26 @@ require_once '../vendor/autoload.php';
 
 use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
-use App\Controllers\BaseController;
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+$capsule = new Capsule;
+
+$capsule->addConnection([
+    'driver'    => 'mysql',
+    'host'      => 'localhost',
+    'database'  => 'uniremin',
+    'username'  => 'root',
+    'password'  => '',
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+]);
+
+// Make this Capsule instance available globally via static methods... (optional)
+$capsule->setAsGlobal();
+
+// Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
+$capsule->bootEloquent();
 
 $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
@@ -19,10 +38,41 @@ $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
 $routerContainer = new RouterContainer();
 $map = $routerContainer->getMap();
 
-$map->get('index', '/post', [
-    'action' => 'PostAction',
+$map->get('posts', '/post', [
+    'action' => 'postAction',
     'controller' =>'App\Controllers\PostController',
 ]);
+
+$map->get('newuser', '/adduser', [
+    'action' => 'addUser',
+    'controller' =>'App\Controllers\UserController',
+]);
+
+$map->get('showuser', '/dashboard/users', [
+    'action' => 'showUsers',
+    'controller' =>'App\Controllers\UserController',
+]);
+
+$map->post('addwuser', '/dashboard/add-user', [
+    'action' => 'addUser',
+    'controller' =>'App\Controllers\UserController',
+]);
+
+$map->get('overview', '/dashboard/overview', [
+    'action' => 'overviewAction',
+    'controller' =>'App\Controllers\DashboardController',
+]);
+
+$map->get('category', '/dashboard/category', [
+    'action' => 'showCategories',
+    'controller' =>'App\Controllers\CategoryController',
+]);
+
+$map->post('addCategory', '/dashboard/add-category', [
+    'action' => 'addCategory',
+    'controller' =>'App\Controllers\CategoryController',
+]);
+
 
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
@@ -38,4 +88,5 @@ if (!$route) {
   $response = $controller->$actionName($request);
 
   echo $response;
+
 }
