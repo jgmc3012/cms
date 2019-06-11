@@ -14,9 +14,10 @@ $capsule = new Capsule;
 $capsule->addConnection([
     'driver'    => 'mysql',
     'host'      => 'localhost',
+    'port'      => '3307',
     'database'  => 'uniremin',
     'username'  => 'root',
-    'password'  => '',
+    'password'  => 'root',
     'charset'   => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix'    => '',
@@ -58,6 +59,11 @@ $map->post('addwuser', '/dashboard/add-user', [
     'controller' =>'App\Controllers\UserController',
 ]);
 
+$map->get('user.rm', '/dashboard/rm-user/', [
+    'action' => 'rmUser',
+    'controller' =>'App\Controllers\UserController',
+]);
+
 $map->get('overview', '/dashboard/overview', [
     'action' => 'overviewAction',
     'controller' =>'App\Controllers\DashboardController',
@@ -73,6 +79,10 @@ $map->post('addCategory', '/dashboard/add-category', [
     'controller' =>'App\Controllers\CategoryController',
 ]);
 
+$map->get('post.new', '/dashboard/new-post', [
+    'action' => 'newPost',
+    'controller' =>'App\Controllers\PostController',
+]);
 
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);

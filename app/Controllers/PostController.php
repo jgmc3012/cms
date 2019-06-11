@@ -12,9 +12,14 @@ class PostController extends BaseController
   {
     parent::__construct();
   }
+
   public function postAction()
   {
     return $this->renderHTML('post.twig');
   }
 
+  public function newPost($request)
+  {
+    return $this->renderHTML('dashboard_post.twig');
+  }
 }
