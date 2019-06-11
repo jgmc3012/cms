@@ -4,11 +4,18 @@
     <h1>Usuarios</h1>
   </div>
   <table class="w3-table w3-bordered">
+    <tr class="">
+      <th>Nombres</th>
+      <th>Apellidos</th>
+      <th>Rol</th>
+      <th>Remover permisos</th>
+    </tr>
     {% for user in users %}
         <tr class="">
           <td>{{ user.first_name }}</td>
-          <td>{{ user.last_name }}
-          <i class="fa fa-trash w3-right">  </i></td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.name_rol }}</td>
+          <td><a href="/dashboard/rm-user/?user={{ user.id_user }}"><i class="fa fa-times w3-large"></i></a></td>
         </tr>
     {% endfor %}
   </table>
@@ -17,6 +24,12 @@
     <form class="" action="/dashboard/add-user" method="post">
       <input class="w3-input" type="text" placeholder="Nombres" name="user_first_name">
       <input class="w3-input" type="text" placeholder="Apellidos" name="user_last_name">
+      <select class="w3-select" name="user_rol">
+        <option value="2">Administrador</option>
+        <option value="4">Autor</option>
+        <option value="5">Colaborador</option>
+        <option value="3">Editor</option>
+      </select>
       <input class="w3-button w3-block" type="submit" class="w3-button" value="Agregar">
     </form>
   </div>
