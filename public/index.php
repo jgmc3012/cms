@@ -5,9 +5,18 @@ error_reporting(E_ALL);
 
 require_once '../vendor/autoload.php';
 
+session_start();
+
+use WoohooLabs\Harmony\Harmony;
+use WoohooLabs\Harmony\Middleware\DispatcherMiddleware;
+use WoohooLabs\Harmony\Middleware\HttpHandlerRunnerMiddleware;
+use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\Response;
 use Illuminate\Database\Capsule\Manager as Capsule;
+
+$container = new DI\Container();
 
 $capsule = new Capsule;
 
@@ -39,64 +48,94 @@ $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
 $routerContainer = new RouterContainer();
 $map = $routerContainer->getMap();
 
+$map->get('login', '/dashboard/login', [
+  'App\Controllers\AuthController',
+  'loginRender',
+]);
+
+$map->post('login.user', '/dashboard/login', [
+    'App\Controllers\AuthController',
+     'loginUser',
+]);
+
 $map->get('posts', '/post', [
-    'action' => 'postAction',
-    'controller' =>'App\Controllers\PostController',
+    'App\Controllers\PostController',
+     'postAction',
 ]);
 
 $map->get('newuser', '/adduser', [
-    'action' => 'addUser',
-    'controller' =>'App\Controllers\UserController',
+    'App\Controllers\UserController',
+     'addUser',
 ]);
 
 $map->get('showuser', '/dashboard/users', [
-    'action' => 'showUsers',
-    'controller' =>'App\Controllers\UserController',
+    'App\Controllers\UserController',
+     'showUsers',
 ]);
 
 $map->post('addwuser', '/dashboard/add-user', [
-    'action' => 'addUser',
-    'controller' =>'App\Controllers\UserController',
+    'App\Controllers\UserController',
+     'addUser',
 ]);
 
 $map->get('user.rm', '/dashboard/rm-user/', [
-    'action' => 'rmUser',
-    'controller' =>'App\Controllers\UserController',
+    'App\Controllers\UserController',
+     'rmUser',
 ]);
 
 $map->get('overview', '/dashboard/overview', [
-    'action' => 'overviewAction',
-    'controller' =>'App\Controllers\DashboardController',
+    'App\Controllers\DashboardController',
+     'overviewAction',
 ]);
 
 $map->get('category', '/dashboard/category', [
-    'action' => 'showCategories',
-    'controller' =>'App\Controllers\CategoryController',
+    'App\Controllers\CategoryController',
+     'showCategories',
 ]);
 
 $map->post('addCategory', '/dashboard/add-category', [
-    'action' => 'addCategory',
-    'controller' =>'App\Controllers\CategoryController',
+    'App\Controllers\CategoryController',
+     'addCategory',
 ]);
 
 $map->get('post.new', '/dashboard/new-post', [
-    'action' => 'newPost',
-    'controller' =>'App\Controllers\PostController',
+    'App\Controllers\PostController',
+     'newPost',
 ]);
 
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
 
-if (!$route) {
-    echo 'No route';
-} else {
-  $handlerData = $route->handler;
-  $controllerName = $handlerData['controller'];
-  $actionName = $handlerData['action'];
+try {
+  $harmony = new Harmony($request, new Response());
+  $harmony
+  ->addMiddleware(new HttpHandlerRunnerMiddleware(new SapiEmitter()))
+  ->addMiddleware(new Middlewares\AuraRouter($routerContainer))
+  ->addMiddleware(new DispatcherMiddleware($container,'request-handler'))
+  ->run();
 
+} catch (\Exception $e) {
+
+}
+
+
+/*
+if (!$route) {
+echo 'No route';
+} else {
+$handlerData = $route->handler;
+$controllerName = $handlerData['controller'];
+$actionName = $handlerData['action'];
   $controller = new $controllerName;
   $response = $controller->$actionName($request);
 
-  echo $response;
-
+  foreach($response->getHeaders() as $name => $values)
+  {
+      foreach($values as $value) {
+          header(sprintf('%s: %s', $name, $value), false);
+      }
+  }
+  http_response_code($response->getStatusCode());
+  echo $response->getBody();
 }
+*/

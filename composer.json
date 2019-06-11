@@ -9,6 +9,10 @@
         "zendframework/zend-diactoros": "^2.1",
         "aura/router": "^3.1",
         "illuminate/database": "^5.8",
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+        "php-di/php-di": "^6.0",
+        "woohoolabs/harmony": "^6.1",
+        "zendframework/zend-httphandlerrunner": "^1.1",
+        "middlewares/aura-router": "^1.1"
     }
 }
