@@ -15,6 +15,7 @@ use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use App\Middlewares\AuthenticationMiddleware;
 
 $container = new DI\Container();
 
@@ -48,59 +49,59 @@ $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
 $routerContainer = new RouterContainer();
 $map = $routerContainer->getMap();
 
-$map->get('login', '/dashboard/login', [
+$map->get('login', '/login-cms', [
   'App\Controllers\AuthController',
   'loginRender',
 ]);
 
-$map->post('login.user', '/dashboard/login', [
-    'App\Controllers\AuthController',
-     'loginUser',
+$map->post('login_user', '/login-cms', [
+  'App\Controllers\AuthController',
+  'loginUser',
 ]);
 
 $map->get('posts', '/post', [
-    'App\Controllers\PostController',
-     'postAction',
+  'App\Controllers\PostController',
+  'postAction',
 ]);
 
-$map->get('newuser', '/adduser', [
-    'App\Controllers\UserController',
-     'addUser',
+$map->get('newuser', '/dashboard/adduser', [
+  'App\Controllers\UserController',
+  'addUser',
 ]);
 
 $map->get('showuser', '/dashboard/users', [
-    'App\Controllers\UserController',
-     'showUsers',
+  'App\Controllers\UserController',
+  'showUsers',
 ]);
 
 $map->post('addwuser', '/dashboard/add-user', [
-    'App\Controllers\UserController',
-     'addUser',
+  'App\Controllers\UserController',
+  'addUser',
 ]);
 
 $map->get('user.rm', '/dashboard/rm-user/', [
-    'App\Controllers\UserController',
-     'rmUser',
+  'App\Controllers\UserController',
+  'rmUser',
 ]);
 
 $map->get('overview', '/dashboard/overview', [
-    'App\Controllers\DashboardController',
-     'overviewAction',
+  'App\Controllers\DashboardController',
+  'overviewAction',
 ]);
 
 $map->get('category', '/dashboard/category', [
-    'App\Controllers\CategoryController',
-     'showCategories',
+  'App\Controllers\CategoryController',
+  'showCategories',
 ]);
 
 $map->post('addCategory', '/dashboard/add-category', [
-    'App\Controllers\CategoryController',
-     'addCategory',
+  'App\Controllers\CategoryController',
+  'addCategory',
 ]);
 
 $map->get('post.new', '/dashboard/new-post', [
-    'App\Controllers\PostController',
-     'newPost',
+  'App\Controllers\PostController',
+  'newPost',
 ]);
 
 $matcher = $routerContainer->getMatcher();
@@ -111,11 +112,17 @@ try {
   $harmony
   ->addMiddleware(new HttpHandlerRunnerMiddleware(new SapiEmitter()))
   ->addMiddleware(new Middlewares\AuraRouter($routerContainer))
-  ->addMiddleware(new DispatcherMiddleware($container,'request-handler'))
-  ->run();
+  ->addMiddleware(new AuthenticationMiddleware())
+  ->addMiddleware(new DispatcherMiddleware($container,'request-handler'));
 
-} catch (\Exception $e) {
+  $harmony();
 
+} catch (Exception $e) {
+    $emitter = new SapiEmitter();
+    $emitter->emit(new Response\EmptyResponse(500));
+} catch (Error $e) {
+    $emitter = new SapiEmitter();
+    $emitter->emit(new Response\EmptyResponse(500));
 }
 
 

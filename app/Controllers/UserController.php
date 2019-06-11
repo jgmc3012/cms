@@ -8,7 +8,20 @@ use Respect\Validation\{Rules,Validator};
  */
 class UserController extends BaseController
 {
-  public function showUsers($request,$data = [])
+  private $stringValidator;
+
+  function __construct() {
+    parent::__construct();
+
+    $this->stringValidator = new Rules\AllOf(
+      new Rules\Alnum(),
+      new Rules\Length(2, 20),
+      new Rules\stringType()
+    );
+
+  }
+
+  public function showUsers($request,$handler,$data = [])
   {
     $users = UserModel::select('user.id_user', 'user.first_name', 'user.last_name', 'cms_rol.name_rol')
                         ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
@@ -18,20 +31,16 @@ class UserController extends BaseController
     $data = $data + [
       'users' => $users
     ];
+
     return $this->renderHTML('users.twig',$data);
   }
 
-  public function addUser($request) {
+  public function addUser($request,$handler) {
     $response = '';
     $new_user = $request->getParsedBody();
 
-    $userValidator = new Rules\AllOf(
-      new Rules\Alnum(),
-      new Rules\Length(2, 20),
-      new Rules\stringType()
-    );
-    if ( ($userValidator->validate($new_user['user_first_name'])) &&
-          $userValidator->validate($new_user['user_last_name']) &&
+    if ( ($this->stringValidator->validate($new_user['user_first_name'])) &&
+          $this->stringValidator->validate($new_user['user_last_name']) &&
          Validator::numeric()->positive()->between(2, 5)->validate($new_user['user_rol']) ) {
 
       $user = new UserModel;
@@ -43,12 +52,12 @@ class UserController extends BaseController
     } else {
       $response = 'Los datos ingresados no deben contener caracteres especiales';
     }
-    return $this->showUsers($request, [
+    return $this->showUsers($request, $handler, [
       'response' => $response,
     ]);
   }
 
-  public function rmUser($request)
+  public function rmUser($request,$handler)
   {
         $id = $request->getQueryParams();
         $user= UserModel::where('id_user','=', $id )->Find(1);

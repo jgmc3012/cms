@@ -1,13 +1,13 @@
 <?php
-  namespace App\Controllers;
+namespace App\Controllers;
 
-  /**
-   *
-   */
-  class DashboardController extends BaseController
+/**
+ *
+ */
+class DashboardController extends BaseController
+{
+  public function overviewAction()
   {
-    public function overviewAction()
-    {
-      return $this->renderHTML('overview.twig');
-    }
+    return $this->renderHTML('overview.twig');
   }
+}

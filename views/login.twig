@@ -1,0 +1,18 @@
+{% extends 'layout.twig' %}
+{% block body_content %}
+<div class="w3-card-4 w3-indigo w3-display-middle" style="width:50%; max-width:400px; height:50%; max-height:300px;">
+<div class="w3-container w3-center">
+  <h3>Iniciar Sesión</h3>
+  <form class="" action="login-cms" method="post">
+
+    <label class="w3-opacity"for="user">Correo Electronico</label>
+    <input class="w3-input w3-border" type="email" name="user_email" id="user">
+
+    <label class="w3-opacity" for="password">Contraseña</label>
+    <input class="w3-input w3-border" type="password" name="user_password" id="password">
+    <hr/>
+    <input  class="w3-button w3-green" style="width:50%;" type="submit" name="" value="Entrar">
+  </form>
+</div>
+</div>
+{% endblock %}

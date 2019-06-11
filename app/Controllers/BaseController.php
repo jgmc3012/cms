@@ -14,6 +14,9 @@ class BaseController {
     }
 
     public function renderHTML($fileName, $data = []) {
+        $data = $data + [
+          'session_user' => $_SESSION['user'],
+        ];
         return new HtmlResponse($this->templateEngine->render($fileName, $data));
     }
 }

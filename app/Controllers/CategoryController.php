@@ -12,20 +12,19 @@
     /**
     *
     */
-    public function showCategories($request, $data=[])
+    public function showCategories($request,$handler, $data=[])
     {
       $categories = CategoryModel::where('id_category', '>' ,'0')->orderBy('name','asc')->get();
       $data = $data + [
         'categories' => $categories
       ];
-      return $this->renderHTML('category.twig',$data);
+      return $this->renderHTML('category.twig', $data);
     }
-
 
     /**
     *
     */
-    public function addCategory($request)
+    public function addCategory($request,$handler)
     {
       $response = '';
       $nameCategory = $request->getParsedBody()['category_name'];
@@ -46,7 +45,7 @@
         $response = 'El nombre de la categoria no debe contener espacios ni caracteres especiales.
                     Y debe ser de un tamaño de entre 2 y 15 caracteres.';
       }
-      return $this->showCategories($request, [
+      return $this->showCategories($request,$handler , [
         'response' => $response,
       ]);
     }
