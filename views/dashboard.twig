@@ -1,6 +1,6 @@
 {% extends "layout.twig" %}
   {% block head_content %}
-    <title>W3.CSS Template</title>
+    <title> Tablero {{ session_user.name_rol }}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <style>
       html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
@@ -18,11 +18,11 @@
     <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
       <div class="w3-container w3-row">
         <div class="w3-col s4">
-          <img src="/w3images/avatar2.png" class="w3-circle w3-margin-right" style="width:46px">
+          <img src="{{ session_user.avatar }}" class="w3-circle w3-margin-right" style="width:60px">
         </div>
         <div class="w3-col s8 w3-bar">
           <span>Bienvenido, <strong>{{ session_user.first_name }}</strong></span><br>
-          <a href="#" class="w3-bar-item w3-button"><i class="fa fa-times w3-large"> Cerrar sesión</i></a>
+          <a href="/logout-cms" class="w3-bar-item w3-button"><i class="fa fa-close w3-large"> Cerrar sesión</i></a>
         </div>
       </div>
       <hr>
@@ -30,14 +30,12 @@
         <h5>Tablero</h5>
       </div>
       <div class="w3-bar-block">
-        <a href="/dashboard/overview" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Vista General</a>
-        <button onclick="accordion('Publicaciones')" class="w3-bar-item w3-button w3-padding"><i class="fa fa-eye fa-fw"></i>  Publicaciones</button>
-        <div id="Publicaciones" class="w3-hide">
-          <a href="/dashboard/new-post" class="w3-button w3-block w3-right-align">Nueva Publicacion</a>
-          <a href="#" class="w3-button w3-block w3-right-align">Modificar Publicacion</a>
-        </div>
-        <a href="/dashboard/users" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Usuarios</a>
-        <a href="/dashboard/category" class="w3-bar-item w3-button w3-padding"><i class="fa fa-folder fa-fw"></i>Categorias</a>
+        <a href="/dashboard/overview" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-home fa-fw"></i>  Vista General</a>
+        <a href="/dashboard/post" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Publicaciones</a>
+        {% if session.id_rol <= 2 %}
+          <a href="/dashboard/users" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Usuarios</a>
+          <a href="/dashboard/category" class="w3-bar-item w3-button w3-padding"><i class="fa fa-folder fa-fw"></i>Categorias</a>
+        {% endif %}
         <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Configuracion</a><br><br>
       </div>
     </nav>
@@ -51,5 +49,5 @@
       {% endblock %}
     <!-- End page content -->
     </div>
-    <script src="/js/dashboard.js"></script>
+    <script src="/script/dashboard.js"></script>
   {% endblock %}

@@ -16,7 +16,6 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Middlewares\AuthenticationMiddleware;
-
 $container = new DI\Container();
 
 $capsule = new Capsule;
@@ -59,9 +58,19 @@ $map->post('login_user', '/login-cms', [
   'loginUser',
 ]);
 
+$map->get('logout_user', '/logout-cms', [
+    'App\Controllers\AuthController',
+    'logoutUser',
+]);
+
 $map->get('posts', '/post', [
   'App\Controllers\PostController',
   'postAction',
+]);
+
+$map->get('post.layout', '/post-layout', [
+    'App\Controllers\PostController',
+    'postLayout',
 ]);
 
 $map->get('newuser', '/dashboard/adduser', [
@@ -104,6 +113,10 @@ $map->get('post.new', '/dashboard/new-post', [
   'newPost',
 ]);
 
+$map->get('post.dashboard', '/dashboard/post', [
+    'App\Controllers\PostController',
+    'dashboardPost',
+]);
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
 
@@ -113,9 +126,10 @@ try {
   ->addMiddleware(new HttpHandlerRunnerMiddleware(new SapiEmitter()))
   ->addMiddleware(new Middlewares\AuraRouter($routerContainer))
   ->addMiddleware(new AuthenticationMiddleware())
-  ->addMiddleware(new DispatcherMiddleware($container,'request-handler'));
+  ->addMiddleware(new DispatcherMiddleware($container,'request-handler'))
 
-  $harmony();
+  ->run();
+
 
 } catch (Exception $e) {
     $emitter = new SapiEmitter();
@@ -124,25 +138,3 @@ try {
     $emitter = new SapiEmitter();
     $emitter->emit(new Response\EmptyResponse(500));
 }
-
-
-/*
-if (!$route) {
-echo 'No route';
-} else {
-$handlerData = $route->handler;
-$controllerName = $handlerData['controller'];
-$actionName = $handlerData['action'];
-  $controller = new $controllerName;
-  $response = $controller->$actionName($request);
-
-  foreach($response->getHeaders() as $name => $values)
-  {
-      foreach($values as $value) {
-          header(sprintf('%s: %s', $name, $value), false);
-      }
-  }
-  http_response_code($response->getStatusCode());
-  echo $response->getBody();
-}
-*/

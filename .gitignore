@@ -2,3 +2,4 @@ vendor/
 composer.phar
 uniremin_db/
 php-database-crud/
+.idea/

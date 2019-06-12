@@ -22,14 +22,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
    */
   public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
   {
-    $page = $request->getUri()->getPath() ;
+    $page = $request->getUri()->getPath();
       if (preg_match('/^\/dashboard/', $page)) {
-          $sessionUserId = $_SESSION['user_id'] ?? null;
-          if (!$sessionUserId) {
-            return new RedirectResponse('/login-cms');
-//              return new EmptyResponse(401);
+          $sessionUser = $_SESSION['user'] ?? [];
+          if ($sessionUser == []) {
+            return new EmptyResponse(401);
           }
       }
+
       return $handler->handle($request);
   }
 }
