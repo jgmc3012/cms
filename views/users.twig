@@ -3,21 +3,7 @@
   <div class="w3-container w3-blue">
     <h1>Usuarios</h1>
   </div>
-  <table class="w3-table w3-bordered">
-    <tr class="">
-      <th>Nombres</th>
-      <th>Apellidos</th>
-      <th>Rol</th>
-      <th>Remover permisos</th>
-    </tr>
-    {% for user in users %}
-        <tr class="">
-          <td>{{ user.first_name }}</td>
-          <td>{{ user.last_name }}</td>
-          <td>{{ user.name_rol }}</td>
-          <td><a href="/dashboard/rm-user/?user={{ user.id_user }}"><i class="fa fa-times w3-large"></i></a></td>
-        </tr>
-    {% endfor %}
+
   </table>
   <button onclick="accordion('addUser')" class="w3-button w3-block w3-teal">Agregar un nuevo usuario</button>
   <div class="w3-hide" id="addUser">
@@ -38,8 +24,31 @@
   </div>
   {% if response != '' %}
     <div class="w3-panel w3-yellow">
-        <h2>Notificacion</h2>
-        <p>{{response}}</p>
+      <h2>Notificacion</h2>
+      <p>{{response}}</p>
     </div>
   {% endif %}
+
+
+  {#Despliegue de los usuarios activos #}
+
+  <table class="w3-table w3-bordered">
+    <tr class="">
+      <th>Nombre y Apellido</th>
+      <th>Rol</th>
+      <th>Publicaciones</th>
+      <th>Remover/Restaurar permisos</th>
+    </tr>
+    {% for user in users %}
+        <tr >
+          <td>{{ user.first_name }} {{ user.last_name }}</td>
+          <td>{{ user.name_rol }}</td>
+          <td>{{ user.tickets }}</td>
+          {% if user.access_admin == 1 %}
+            <td><a href="/dashboard/act-rm-user/{{ user.id_user }}"><i class="fa fa-times w3-large"> Romover</i></a></td>
+          {% else %}
+            <td><a href="/dashboard/act-rm-user/{{ user.id_user }}"><i class="fa fa-home w3-large"> Restaurar</i></a></td>
+          {% endif %}
+        </tr>
+    {% endfor %}
 {% endblock %}

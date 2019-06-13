@@ -11,7 +11,7 @@
       {% for category in categories %}
           <tr class="">
             <td>{{ category.name }}</td>
-            <td><a href="/dashboard/delete-category"><i class="fa fa-trash w3-center "></i></a></td>
+            <td><a href="/dashboard/act-rm-category/{{ category.id_category }}"><i class="fa fa-trash w3-center "></i></a></td>
           </tr>
       {% endfor %}
     </table>

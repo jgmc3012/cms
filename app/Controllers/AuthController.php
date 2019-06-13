@@ -23,9 +23,7 @@ class AuthController extends BaseController
     if ($request->getMethod() == 'POST') {
 
       $postData = $request->getParsedBody();
-//      var_dump(Validator::Alnum('- _')->Length(4, 20)->notBlank()->validate($post['user_name']));
       if (Validator::email()->validate($postData['user_email'])) {
-//        $user = UserModel::where('email','=',$postData['user_email'])->first();
           $user = UserModel::select('*')
               ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
               ->where('email','=',$postData['user_email'])

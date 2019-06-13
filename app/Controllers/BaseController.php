@@ -19,4 +19,5 @@ class BaseController {
         ];
         return new HtmlResponse($this->templateEngine->render($fileName, $data));
     }
+
 }

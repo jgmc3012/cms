@@ -2,17 +2,45 @@
   namespace App\Controllers;
 
   use App\Models\CategoryModel;
+  use App\Models\UserModel;
+  use Psr\Http\Message\ResponseInterface;
   use Respect\Validation\Rules;
+  use Respect\Validation\Validator;
+  use Zend\Diactoros\Response\EmptyResponse;
+  use Zend\Diactoros\Response\HtmlResponse;
+  use Zend\Diactoros\ServerRequest;
+  use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
+
   /**
    *
    */
   class CategoryController extends BaseController
   {
+    /**
+     *
+     */
+    public function active_remove_Category(ServerRequest $request,ResponseInterface $handler):HtmlResponse
+    {
+        $id_category = $request->getAttribute('id');
+        if (Validator::alnum()->numeric()->validate($id_category)) {
+            $category  = CategoryModel::where('id_category','=',$id_category)->first();
+            if ($category->category_active == 1) {
+                $category->category_active = 0;
+            } else {
+                $category->category_active = 1;
+            }
+            $category->save();
+            return $this->showCategories($request,$handler);
+        } else {
+            throw new \Exception('Estas ingresando datos invalidos en el sistema', 400);
+        }
+
+    }
 
     /**
     *
     */
-    public function showCategories($request,$handler, $data=[])
+    public function showCategories(ServerRequest $request,ResponseInterface $handler, $data=[]):HtmlResponse
     {
       $categories = CategoryModel::where('id_category', '>' ,'0')->orderBy('name','asc')->get();
       $data = $data + [
@@ -20,11 +48,10 @@
       ];
       return $this->renderHTML('category.twig', $data);
     }
-
     /**
     *
     */
-    public function addCategory($request,$handler)
+    public function addCategory(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
       $response = '';
       $nameCategory = $request->getParsedBody()['category_name'];

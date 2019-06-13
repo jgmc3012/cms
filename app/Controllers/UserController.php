@@ -2,7 +2,11 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use Illuminate\Database\Capsule\Manager;
+use Psr\Http\Message\ResponseInterface;
 use Respect\Validation\{Rules,Validator};
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 
 /**
@@ -23,21 +27,31 @@ class UserController extends BaseController
 
   }
 
-  public function showUsers(ServerRequest $request, $handler,$data = [])
-  {
-    $users = UserModel::select('user.id_user', 'user.first_name', 'user.last_name', 'cms_rol.name_rol')
-                        ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
-                        ->where('user.id_rol','<','6')
-                        ->orderBy('first_name','asc')
-                        ->get();
-    $data = $data + [
+    /**
+    * Muestra los usuarios con permisos activos y removidos para la administracion y creacion de
+    * publicaciones
+    *
+    */
+    public function showUsers(ServerRequest $request,ResponseInterface $handler):HtmlResponse
+    {
+    $users = Manager::select('SELECT user.id_user, user.access_admin, user.id_rol , user.first_name, cms_rol.name_rol, count(post.id_owner) AS tickets
+                            FROM user 
+                                INNER JOIN cms_rol ON 
+                                user.id_rol = cms_rol.id_rol
+                                LEFT JOIN post ON 
+                                user.id_user = post.id_owner
+                            GROUP BY user.id_user
+                            ORDER BY user.access_admin AND user.id_rol DESC
+                             ');
+
+    $data = [
       'users' => $users
     ];
 
     return $this->renderHTML('users.twig',$data);
-  }
+    }
 
-  public function addUser(ServerRequest $request,$handler) {
+    public function addUser(ServerRequest $request,ResponseInterface $handler) {
     $response = '';
     $new_user = $request->getParsedBody();
 
@@ -61,14 +75,25 @@ class UserController extends BaseController
     return $this->showUsers($request, $handler, [
       'response' => $response,
     ]);
-  }
+    }
 
-  public function rmUser(ServerRequest $request,$handler)
-  {
-        $id = $request->getQueryParams();
-        $user= UserModel::where('id_user','=', $id )->Find(1);
-        $user->id_rol = 6;
-        $user->save();
-        var_dump($user);
-  }
+    public function activeUser(ServerRequest $request,ResponseInterface $handler):HtmlResponse
+    {
+
+        $id_user = $request->getAttribute('id');
+
+        if (Validator::alnum()->numeric()->validate($id_user)) {
+            $user  = UserModel::where('id_user','=',$id_user)->first();
+            if ($user->access_admin == 1) {
+                $user->access_admin = 0;
+            } else {
+                $user->access_admin = 1;
+            }
+            $user->save();
+            return $this->showUsers($request,$handler);
+
+        }   else {
+            throw new \Exception('Estas ingresando datos invalidos en el sistema', 400);
+        }
+    }
 }

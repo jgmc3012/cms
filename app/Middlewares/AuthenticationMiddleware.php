@@ -26,7 +26,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
       if (preg_match('/^\/dashboard/', $page)) {
           $sessionUser = $_SESSION['user'] ?? [];
           if ($sessionUser == []) {
-            return new EmptyResponse(401);
+
+            throw new \Exception('Usuario no logueado',401);
           }
       }
 

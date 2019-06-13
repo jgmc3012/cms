@@ -12,7 +12,6 @@ use WoohooLabs\Harmony\Middleware\DispatcherMiddleware;
 use WoohooLabs\Harmony\Middleware\HttpHandlerRunnerMiddleware;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Aura\Router\RouterContainer;
-use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Middlewares\AuthenticationMiddleware;
@@ -88,9 +87,9 @@ $map->post('addwuser', '/dashboard/add-user', [
   'addUser',
 ]);
 
-$map->get('user.rm', '/dashboard/rm-user/', [
+$map->get('user.active', '/dashboard/act-rm-user/{id}', [
   'App\Controllers\UserController',
-  'rmUser',
+  'activeUser',
 ]);
 
 $map->get('overview', '/dashboard/overview', [
@@ -106,6 +105,11 @@ $map->get('category', '/dashboard/category', [
 $map->post('addCategory', '/dashboard/add-category', [
   'App\Controllers\CategoryController',
   'addCategory',
+]);
+
+$map->get('Category.act-rm', '/dashboard/act-rm-category/{id}', [
+    'App\Controllers\CategoryController',
+    'active_remove_Category',
 ]);
 
 $map->get('post.new', '/dashboard/new-post', [
@@ -130,11 +134,21 @@ try {
 
   ->run();
 
-
 } catch (Exception $e) {
-    $emitter = new SapiEmitter();
-    $emitter->emit(new Response\EmptyResponse(500));
+    switch ($e->getCode()){
+        case 401:
+            if ($e->getMessage() == 'Usuario no logueado'){
+                ob_start();
+                header('Location: /login-cms');
+            };
+            break;
+        default:
+            var_dump($e);
+            $emitter = new SapiEmitter();
+            $emitter->emit(new Response\EmptyResponse(500));
+            break;
+    };
 } catch (Error $e) {
-    $emitter = new SapiEmitter();
-    $emitter->emit(new Response\EmptyResponse(500));
+    echo 'ERROR <br/>';
+    echo var_dump($e);
 }
