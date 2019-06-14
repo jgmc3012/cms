@@ -28,6 +28,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
           if ($sessionUser == []) {
 
             throw new \Exception('Usuario no logueado',401);
+            return new EmptyResponse(401);
           }
       }
 

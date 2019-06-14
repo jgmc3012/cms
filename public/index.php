@@ -7,6 +7,7 @@ require_once '../vendor/autoload.php';
 
 session_start();
 
+use Middlewares\AuraRouter;
 use WoohooLabs\Harmony\Harmony;
 use WoohooLabs\Harmony\Middleware\DispatcherMiddleware;
 use WoohooLabs\Harmony\Middleware\HttpHandlerRunnerMiddleware;
@@ -72,24 +73,19 @@ $map->get('post.layout', '/post-layout', [
     'postLayout',
 ]);
 
-$map->get('newuser', '/dashboard/adduser', [
-  'App\Controllers\UserController',
-  'addUser',
-]);
-
-$map->get('showuser', '/dashboard/users', [
+$map->get('user.show', '/dashboard/users', [
   'App\Controllers\UserController',
   'showUsers',
 ]);
 
-$map->post('addwuser', '/dashboard/add-user', [
+$map->post('user.add', '/dashboard/users/add', [
   'App\Controllers\UserController',
   'addUser',
 ]);
 
-$map->get('user.active', '/dashboard/act-rm-user/{id}', [
+$map->get('user.act-rm', '/dashboard/users/act-rm/{id}', [
   'App\Controllers\UserController',
-  'activeUser',
+  'activeRemoveUser',
 ]);
 
 $map->get('overview', '/dashboard/overview', [
@@ -97,22 +93,22 @@ $map->get('overview', '/dashboard/overview', [
   'overviewAction',
 ]);
 
-$map->get('category', '/dashboard/category', [
+$map->get('category.show', '/dashboard/category', [
   'App\Controllers\CategoryController',
   'showCategories',
 ]);
 
-$map->post('addCategory', '/dashboard/add-category', [
+$map->post('category.add', '/dashboard/category/add', [
   'App\Controllers\CategoryController',
   'addCategory',
 ]);
 
-$map->get('Category.act-rm', '/dashboard/act-rm-category/{id}', [
+$map->get('Category.act-rm', '/dashboard/category/act-rm/{id}', [
     'App\Controllers\CategoryController',
-    'active_remove_Category',
+    'activeRemoveCategory',
 ]);
 
-$map->get('post.new', '/dashboard/new-post', [
+$map->get('post.new', '/dashboard/post/new-post', [
   'App\Controllers\PostController',
   'newPost',
 ]);
@@ -121,6 +117,12 @@ $map->get('post.dashboard', '/dashboard/post', [
     'App\Controllers\PostController',
     'dashboardPost',
 ]);
+
+$map->get('index', '/', [
+    'App\Controllers\IndexController',
+    'dashboardPost',
+]);
+
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
 
@@ -128,8 +130,9 @@ try {
   $harmony = new Harmony($request, new Response());
   $harmony
   ->addMiddleware(new HttpHandlerRunnerMiddleware(new SapiEmitter()))
-  ->addMiddleware(new Middlewares\AuraRouter($routerContainer))
   ->addMiddleware(new AuthenticationMiddleware())
+  ->addMiddleware(new \App\Middlewares\AccessPermitsMiddleware())
+  ->addMiddleware(new Middlewares\AuraRouter($routerContainer))
   ->addMiddleware(new DispatcherMiddleware($container,'request-handler'))
 
   ->run();
@@ -148,7 +151,4 @@ try {
             $emitter->emit(new Response\EmptyResponse(500));
             break;
     };
-} catch (Error $e) {
-    echo 'ERROR <br/>';
-    echo var_dump($e);
 }

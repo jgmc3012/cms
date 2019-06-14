@@ -19,7 +19,7 @@
     /**
      *
      */
-    public function active_remove_Category(ServerRequest $request,ResponseInterface $handler):HtmlResponse
+    public function activeRemoveCategory(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
         $id_category = $request->getAttribute('id');
         if (Validator::alnum()->numeric()->validate($id_category)) {
@@ -46,7 +46,7 @@
       $data = $data + [
         'categories' => $categories
       ];
-      return $this->renderHTML('category.twig', $data);
+      return $this->renderHTML('dashboard_category.twig', $data);
     }
     /**
     *

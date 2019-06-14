@@ -1,55 +1,79 @@
 {% extends "dashboard.twig" %}
   {% block page_content %}
-    <div class="w3-container">
       <h2 class="w3-center w3-blues">Tablero de Publicaciones</h2>
-      <div class="w3-panel">
+      <div class="w3-container">
         <a href="/dashboard/new-post" class="w3-button w3-orange w3-center">Nuevo Post</a>
-        <div class="w3-container w3-grey">
-          <input type="checkbox" class="" id="checkAll">
+        <div class="w3-container w3-grey w3-margin-top w3-margin-bottom">
           <a href="#" class="w3-button w3-grey w3-center w3-small">Publicar</a>
           <a href="#" class="w3-button w3-grey w3-center w3-small">Cambiar a Borrador</a>
           <a href="#" class="w3-button w3-grey w3-center w3-small"><i class="fa fa-trash w3-medium"></i></a>
         </div>
       </div>
-    </div>
 
     <div class="w3-container">
-      <ul class="w3-ul w3-hoverable w3-striped">
-        <li class="w3-bar">
-          <div class="w3-bar-item">
-            <input class="w3-item" type="checkbox" id="check#"/>
-          </div>
-          <div class="w3-bar-item">
-            <a href="#" class="w3-medium">titulo del post</a>
-            <br/>
-            <a href="#" class="w3-link w3-blue w3-center w3-small">Editar</a>
-            <a href="#" class="w3-blue w3-center w3-small">Eliminar</a>
-          </div>
-          <div class="w3-rigth">
-            <div class="w3-bar-item">
-              <a href="#" class="w3-small">Modificado por</a>
-            </div>
-            <div class="w3-bar-item">
-              <span class="w3-small">Borrador</span>
-            </div>
-            <div class="w3-bar-item">
-              <a href="#" class="w3-small">Autor</a>
-            </div>
-            <div class="w3-bar-item">
-              <span class="w3-large"> <i class="fa fa-comment"> 0</i></span>
-            </div>
-            <div class="w3-bar-item">
-              <span class="w3-large"> <i class="fa fa-eye"> 0</i></span>
-            </div>
-            <div class="w3-bar-item">
-              <span class="w3-large"> <i class="fa fa-calendar"> 16/06/2019</i></span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <a href="/dashboard/new-post" class="w3-button w3-block w3-center">Crear nuevo Post</a>
-        </li>
-      </ul>
+
+      <table class="w3-table w3-hoverable w3-striped">
+        <tr>
+          <th class="w3-center">N</th>
+          <th><input type="checkbox" class="w3-input" id="checkAll">-</th>
+          <th class="w3-center">Titulo</th>
+          <th class="w3-center">Estado</th>
+          <th class="w3-center">Autor</th>
+          <th class="w3-center">Categoria</th>
+          <th class="w3-center">Nº Comentarios</th>
+          <th class="w3-center">Visitas</th>
+          <th class="w3-center">Creado</th>
+        </tr>
+
+        {% set row = 0 %}
+        {% for post in posts %}
+          {% set row = row + 1 %}
+          <tr >
+            <td class="w3-center">
+              <spam>{{ row }}</spam>
+            </td>
+            <td class="w3-center" >
+              <input class="w3-input" type="checkbox" id="check{{ post.id }}"/>
+            </td>
+
+            <td class="w3-center">
+              <a href="/post/{{- post.id_post }}" class="w3-medium">{{ post.title }}</a>
+              <br/>
+              <a href="#" class="w3-blue w3-center w3-small">Editar</a>
+              <a href="#" class="w3-blue w3-center w3-small">Eliminar</a>
+            </td>
+            {% if post.published %}
+              {% set status = 'Publicado' %}
+            {% else %}
+              {% set status = 'Borrador' %}
+            {% endif %}
+
+            <td class="w3-center" >
+              <span class="w3-small">{{ status }}</span>
+            </td>
+
+            <td class="w3-center" >
+              <a href="#" class="w3-medium">{{ post.first_name  }} {{ post.last_name }}</a>
+            </td>
+
+            <td class="w3-center" >
+              <span class="w3-medium"> {{ post.category_name }}</span>
+            </td>
+
+            <td class="w3-center" >
+              <span class="w3-medium"> <i class="fa fa-comment"> no se</i></span>
+            </td>
+
+            <td class="w3-center" >
+              <span class="w3-medium"> <i class="fa fa-eye"> {{ post.visits }}</i></span>
+            </td>
+
+            <td class="w3-center" >
+              <span class="w3-medium"> <i class="fa fa-calendar"> {{ post.date }}</i></span>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
     </div>
   {% endblock %}
 

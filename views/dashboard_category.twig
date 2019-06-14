@@ -1,0 +1,31 @@
+{% extends 'dashboard.twig' %}
+  {% block page_content %}
+    <div class="w3-container">
+      <h1 class="w3-center">Categorias</h1>
+    </div>
+    {% if response != '' %}
+      <div class="w3-panel w3-yellow">
+        <h2>Notificacion</h2>
+        <p>{{response}}</p>
+      </div>
+    {% endif %}
+    <button onclick="accordion('addCategory')" class="w3-button w3-block w3-teal">Agregar una nueva categoria</button>
+    <div class="w3-hide w3-animation-opacity" id="addCategory">
+      <form class="" action="/dashboard/category/add" method="post">
+        <input class="w3-input" type="text" placeholder="Nombre de la Categoria" name="category_name">
+        <input class="w3-button w3-block w3-blue w3-holder-grey w3-margin-bottom" type="submit" class="w3-button" value="Agregar">
+      </form>
+    </div>
+    <table class="w3-table w3-bordered">
+      <tr class="">
+        <th >Nombre</th>
+        <th class="w3-center">Eliminar</th>
+      </tr>
+      {% for category in categories %}
+          <tr>
+            <td >{{ category.name }}</td>
+            <td class="w3-center"><a  href="/dashboard/category/act-rm/{{ category.id_category }}"><i class="fa fa-trash"></i></a></td>
+          </tr>
+      {% endfor %}
+    </table>
+  {% endblock %}

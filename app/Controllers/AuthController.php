@@ -2,7 +2,9 @@
 namespace App\Controllers;
 
 use App\Models\{UserModel,PostModel};
+use Psr\Http\Message\ResponseInterface;
 use Respect\Validation\Validator;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 
@@ -12,23 +14,25 @@ use Zend\Diactoros\ServerRequest;
 class AuthController extends BaseController
 {
 
-  public function loginRender(ServerRequest $request)
+  public function loginRender(ServerRequest $request,ResponseInterface $handler, $data = [])
   {
-    return $this->renderHTML('login.twig');
+    return $this->renderHTML('login.twig', $data);
   }
-
-  public function loginUser(ServerRequest $request)
+  /**
+   * Si el la combinacion de usuario y contraseña son correctos redirecciona al tablero
+   * de lo contrario carga de nuevo el login y muestra un mensaje
+   *
+   * @return RedirectResponse
+   * @return HtmlResponse
+   */
+  public function loginUser(ServerRequest $request,ResponseInterface $handler)
   {
 
     if ($request->getMethod() == 'POST') {
 
+      $message = '';
       $postData = $request->getParsedBody();
       if (Validator::email()->validate($postData['user_email'])) {
-          $user = UserModel::select('*')
-              ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
-              ->where('email','=',$postData['user_email'])
-              ->orderBy('first_name','asc')
-              ->first();
 
           $user = UserModel::select('*')
               ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
@@ -49,21 +53,23 @@ class AuthController extends BaseController
                 'avatar'        =>  $user->avatar,
                 'name_rol'      =>  $user->name_rol,
             ];
-            return new RedirectResponse('/dashboard/overview');
+             $response = new RedirectResponse('/dashboard/overview');
+          } else {
+              $message = 'La combinacion de correo y cotraseña invalidos';
           }
+        } else {
+            $message = 'La combinacion de correo y cotraseña invalidos';
         }
-      }
-      if ($user) {
-        return $this->LoginUser($request,[
-          'response' => 'El correo y contraseña no corresponden a ningun usuario'
-        ]);
+        $response = $response ?? $this->loginRender($request,$handler,[ 'message' => $message]);
+
+        return $response;
       }
     }
   }
 
-  public function logoutUser( ServerRequest $request)
+  public function logoutUser( ServerRequest $request):RedirectResponse
   {
       $_SESSION['user'] = [];
-      return $this->loginRender($request);
+      return new RedirectResponse('/login-cms');
   }
 }

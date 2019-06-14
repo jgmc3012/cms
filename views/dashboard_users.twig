@@ -1,0 +1,79 @@
+{% extends 'dashboard.twig' %}
+{% block page_content %}
+  <div class="w3-container">
+    <h1 class="w3-center">Usuarios</h1>
+  </div>
+
+  <button onclick="accordion('addUser')" class="w3-button w3-block w3-teal">Nuevo usuario</button>
+
+  <div class="w3-hide w3-animate-opacity" id="addUser">
+    <form class="w3-border" action="/dashboard/users/add" method="post">
+      <input required class="w3-input" type="text" placeholder="Nombres" name="user_first_name">
+      <input required class="w3-input" type="text" placeholder="Apellidos" name="user_last_name">
+      <input required class="w3-input" type="email" placeholder="Correo" name="user_email">
+      <input required class="w3-input" type="password" placeholder="Contraseña" name="user_password">
+      <input required class="w3-input" type="password" placeholder="Confirma la contraseña" name="user_password_repeat">
+      <select class="w3-select" name="user_rol">
+        <option value="2">Administrador</option>
+        <option value="4">Autor</option>
+        <option value="5">Colaborador</option>
+        <option value="3">Editor</option>
+      </select>
+      <input class="w3-button w3-block w3-blue w3-holder-grey w3-margin-bottom" type="submit" class="w3-button" value="Agregar">
+    </form>
+  </div>
+
+  {% if response != '' %}
+    <div class="w3-panel w3-yellow">
+      <h2>Notificacion</h2>
+      <p>{{response}}</p>
+    </div>
+  {% endif %}
+
+
+  {#Despliegue de los usuarios activos #}
+  {# Creacion de una bandera firts para crear la table de usuarios inactivo en el momento que terminemos de desplegar los
+   usuarios activos#}
+  {% set first = true %}
+  {% set icono = 'fa fa-times' %}
+  {% set action = 'Remover' %}
+
+  <div class="w3-panel w3-blue">
+    <h3 class="w3-center">Usuarios Activos</h3>
+  </div>
+  <table class="w3-table w3-bordered">
+    <tr class="">
+      <th class="w3-center">Nombre y Apellido</th>
+      <th class="w3-center">Rol</th>
+      <th class="w3-center">Publicaciones</th>
+      <th class="w3-center">{{ action }} permisos</th>
+    </tr>
+    {% for user in users %}
+      {% if ( (user.access_admin == 0) and (first) ) %}
+
+        {% set first = false %}
+        {% set icono = 'fa fa-times'%}
+        {% set action = 'Restaurar'%}
+
+        </table>
+        <div class="w3-panel w3-red">
+          <h3 class="w3-center">Usuarios Inactivos</h3>
+        </div>
+        <table class="w3-table w3-bordered">
+        <tr class="">
+          <th class="w3-center">Nombre y Apellido</th>
+          <th class="w3-center">Rol</th>
+          <th class="w3-center">Publicaciones</th>
+          <th class="w3-center">{{ action }} permisos</th>
+        </tr>
+      {% endif %}
+      {# Despliegue de las filas#}
+      <tr >
+        <td class="w3-center">{{ user.first_name }} {{ user.last_name }}</td>
+        <td class="w3-center">{{ user.name_rol }}</td>
+        <td class="w3-center">{{ user.tickets }}</td>
+        <td class="w3-center"><a href="/dashboard/users/act-rm/{{- user.id_user -}}"><i class="{{ icono }} w3-large"> {{ action -}}</i> </a></td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

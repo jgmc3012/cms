@@ -11,7 +11,7 @@
     <!-- Top container -->
     <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
       <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
-      <span class="w3-bar-item w3-right">Logo</span>
+      <span class="w3-bar-item w3-right">Sistema Manejador de Contenidos</span>
     </div>
 
     <!-- Sidebar/menu -->
@@ -26,13 +26,13 @@
         </div>
       </div>
       <hr>
-      <div class="w 3-container">
-        <h5>Tablero</h5>
+      <div class="w 3-container w3-black">
+        <h5 class="w3-center">Tablero</h5>
       </div>
       <div class="w3-bar-block">
-        <a href="/dashboard/overview" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-home fa-fw"></i>  Vista General</a>
+        <a href="/dashboard/overview" class="w3-bar-item w3-button w3-padding w3-dark-grey"><i class="fa fa-home fa-fw"></i>  Vista General</a>
         <a href="/dashboard/post" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Publicaciones</a>
-        {% if session.id_rol <= 2 %}
+        {% if session_user.id_rol <= 2 %}
           <a href="/dashboard/users" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Usuarios</a>
           <a href="/dashboard/category" class="w3-bar-item w3-button w3-padding"><i class="fa fa-folder fa-fw"></i>Categorias</a>
         {% endif %}

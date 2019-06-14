@@ -34,7 +34,7 @@ class UserController extends BaseController
     */
     public function showUsers(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
-    $users = Manager::select('SELECT user.id_user, user.access_admin, user.id_rol , user.first_name, cms_rol.name_rol, count(post.id_owner) AS tickets
+    $users = Manager::select('SELECT user.id_user, user.access_admin, user.id_rol , user.first_name, user.last_name, cms_rol.name_rol, count(post.id_owner) AS tickets
                             FROM user 
                                 INNER JOIN cms_rol ON 
                                 user.id_rol = cms_rol.id_rol
@@ -48,7 +48,7 @@ class UserController extends BaseController
       'users' => $users
     ];
 
-    return $this->renderHTML('users.twig',$data);
+    return $this->renderHTML('dashboard_users.twig',$data);
     }
 
     public function addUser(ServerRequest $request,ResponseInterface $handler) {
@@ -77,7 +77,7 @@ class UserController extends BaseController
     ]);
     }
 
-    public function activeUser(ServerRequest $request,ResponseInterface $handler):HtmlResponse
+    public function activeRemoveUser(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
 
         $id_user = $request->getAttribute('id');

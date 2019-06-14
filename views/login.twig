@@ -1,6 +1,6 @@
 {% extends 'layout.twig' %}
 {% block body_content %}
-<div class="w3-card-4 w3-indigo w3-display-middle" style="width:50%; max-width:400px; height:50%; max-height:300px;">
+<div class="w3-card-4 w3-indigo w3-display-middle" style="width:50%; max-width:400px; height:60%; max-height:500px;">
 <div class="w3-container w3-center">
   <h3>Iniciar Sesión</h3>
   <form class="" action="login-cms" method="post">
@@ -13,6 +13,11 @@
     <hr/>
     <input  class="w3-button w3-green" style="width:50%;" type="submit" name="" value="Entrar">
   </form>
+  {% if message != '' %}
+    <div class="w3-panel w3-round-xlarge w3-margin-top w3-red">
+      <spam>{{ message }}</spam>
+    </div>
+  {% endif %}
 </div>
 </div>
 {% endblock %}
