@@ -8,7 +8,7 @@
       <!-- Header -->
       <header class="w3-container w3-red w3-center" style="padding:128px 16px">
           <h1 class="w3-margin w3-jumbo">{{ post.title }}</h1>
-          <p class="w3-medium">Escrito por <a href="">{{ post.user_first_name }} {{ post.user_last_name }}</a></p>
+          <p class="w3-medium">Escrito por <a href="#">{{ post.user_first_name }} {{ post.user_last_name }}</a></p>
       </header>
 
       <!-- This is the Post -->
@@ -37,12 +37,12 @@
           {% endfor %}
 
       </div>
+      <hr/>
       <div class="w3-panel">
           <form  method="post">
-              <textarea class="w3-input w3-border" name="comment_body" style="resize:none;" rows="4" ></textarea>
+              <textarea placeholder="Escribe un comentario..." class="w3-input w3-border" name="comment_body" style="resize:none;" rows="4" ></textarea>
               <input class="w3-button w3-margin-top w3-blue w3-hover" type="submit" value="Enviar Comentario">
           </form>
       </div>
-      <hr>
-
+      <hr/>
   {% endblock %}
