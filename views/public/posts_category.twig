@@ -1,0 +1,39 @@
+{% extends 'public/layout.twig' %}
+
+{% block head_content %}
+    <title>{{ category_current.name }}</title>
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="w3-panel w3-red w3-center" style="padding:128px 16px">
+        <h1 class="w3-margin w3-jumbo">{{ category_current.name }}</h1>
+        <p class="w3-xlarge">{{ category_current.category_decription }}</p>
+    </div>
+
+    <!-- Aqui comienza a desplegarse cada post -->
+
+        {% for post in posts %}
+            <div class="w3-card-4 w3-hover-blue-grey" onclick="window.location = '/post/{{ post.id }}' ">
+                <div class="w3-panel">
+                    <div class="w3-threequarter">
+                        <h2 class=""> {{ post.title }} </h2>
+                        <hr/>
+                        <p>{{ post.body[0:159] }}</p>
+                    </div>
+                    <div class="w3-quarter w3-bar w3-panel">
+                        <div class="w3-bar-item w3-center">
+                            <spam><i class="fa fa-calendar"></i> Publicado</spam>
+                            <p>{{ post.date }}</p>
+                        </div>
+                        <div class="w3-bar-item w3-center">
+                            <spam><i class="fa fa-user"></i> Autor</spam>
+                            <p>{{ post.user_first_name }} {{ post.user_last_name }}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+{% endblock %}

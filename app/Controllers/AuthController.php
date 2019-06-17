@@ -41,6 +41,7 @@ class AuthController extends BaseController
               ->first();
 
         if ($user) {
+          //if (password_verify($postData['user_password'], $user->password)) {
           if ($user->password == $postData['user_password']) {
 
             unset($_SESSION['user']);

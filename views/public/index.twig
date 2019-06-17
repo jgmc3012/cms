@@ -1,0 +1,22 @@
+{% extends 'public/layout.twig' %}
+
+{% block head_content %}
+    <title>Cartelera</title>
+{% endblock %}
+
+{% block page_content %}
+
+    <!-- Despliegue de las categorias disponibles para visitar -->
+
+    {% for category in categories %}
+
+        <div class="w3-panel w3-red w3-center" style="padding:128px 16px">
+            <h1 class="w3-margin w3-jumbo">{{ category.name }}</h1>
+            <p class="w3-xlarge">Descripcion de la categoria</p>
+            <a href="/category/{{ category.name }}" class="w3-round-large    w3-button w3-black w3-padding-large w3-large w3-margin-top">Explorar {{ category.name }}</a>
+        </div>
+
+    {% endfor %}
+
+
+{% endblock %}

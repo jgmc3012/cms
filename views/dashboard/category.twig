@@ -16,16 +16,43 @@
         <input class="w3-button w3-block w3-blue w3-holder-grey w3-margin-bottom" type="submit" class="w3-button" value="Agregar">
       </form>
     </div>
+
+    {% set first = true %}
+    {% set icono = 'fa fa-times' %}
+    {% set action = 'Desactivar' %}
+
+    <div class="w3-panel w3-blue">
+      <h3 class="w3-center">Categorias Activas</h3>
+    </div>
+
     <table class="w3-table w3-bordered">
       <tr class="">
-        <th >Nombre</th>
+        <th class="">Nombre</th>
         <th class="w3-center">Eliminar</th>
       </tr>
       {% for category in categories %}
-          <tr>
-            <td >{{ category.name }}</td>
-            <td class="w3-center"><a  href="/dashboard/category/act-rm/{{ category.id_category }}"><i class="fa fa-trash"></i></a></td>
+
+        {% if ( (category.category_active == 0) and (first) ) %}
+
+          {% set first = false %}
+          {% set icono = 'fa fa-home'%}
+          {% set action = 'Activar'%}
+
+          </table>
+          <div class="w3-panel w3-red">
+            <h3 class="w3-center">Categorias Inactivas</h3>
+          </div>
+          <table class="w3-table w3-bordered">
+          <tr class="">
+            <th class="">Nombre</th>
+            <th class="w3-center">{{ action }}</th>
           </tr>
+        {% endif %}
+
+        <tr>
+          <td class="">{{ category.name }}</td>
+          <td class="w3-center w3-large"><a  href="/dashboard/category/act-rm/{{ category.id_category }}"><i class="{{ icono }}"></i></a></td>
+        </tr>
       {% endfor %}
     </table>
   {% endblock %}

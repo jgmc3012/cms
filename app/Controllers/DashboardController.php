@@ -10,6 +10,6 @@ class DashboardController extends BaseController
 {
   public function overviewAction():HtmlResponse
   {
-    return $this->renderHTML('overview.twig');
+    return $this->renderHTML('dashboard/overview.twig');
   }
 }

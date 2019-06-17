@@ -2,8 +2,9 @@
 namespace App\Controllers;
 
 use App\Models\CategoryModel;
-use App\Models\Post;
 use Illuminate\Database\Capsule\Manager;
+use Respect\Validation\Validator;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequest;
 
@@ -13,9 +14,38 @@ use Zend\Diactoros\ServerRequest;
 class PostController extends BaseController
 {
 
-  public function postAction()
+  public function postShow(ServerRequest $request)
   {
-      return $this->renderHTML('post.twig');
+      $id_post = $request->getAttribute('id');
+      if (Validator::intVal()->positive()->validate($id_post))
+      {
+          $post = Manager::select("
+                    SELECT post.title, post.body, user.first_name AS user_first_name, user.last_name AS user_last_name
+                    FROM post
+                    INNER JOIN user ON
+                        post.id_owner = user.id_user
+                    WHERE post.id_post = $id_post                      
+          ")[0] ?? null;
+
+          $comments = Manager::select("
+                    SELECT comment.body, comment.date_created, user.first_name AS author_first_name,
+                            user.last_name AS author_last_name, user.avatar AS author_avatar
+                    FROM comment
+                    INNER JOIN user ON
+                        comment.id_user = user.id_user
+                    WHERE comment.id_user = $id_post                       
+          ");
+
+          $response = $this->renderHTML('public/post.twig', [
+              'comments'    => $comments,
+              'post'        => $post,
+          ]);
+
+      } else {
+          $response = new EmptyResponse(400);
+      }
+
+      return $response;
   }
 
   public function postLayout()
@@ -32,7 +62,7 @@ class PostController extends BaseController
       return $this->renderHTML('post_new.twig',$data);
   }
 
-  public function dashboardPost(ServerRequest $request):HtmlResponse
+  public function dashboardPost():HtmlResponse
   {
       $posts = Manager::select('SELECT category.name AS category_name, post.id_post, post.title, post.published, user.id_user AS 
                                     id_owner, user.first_name, user.last_name, DATE(post.date_created) AS date, post.visits 
@@ -47,7 +77,6 @@ class PostController extends BaseController
       $data = [
           'posts'    => $posts,
       ];
-      return $this->renderHTML('dashboard_post.twig',$data);
+      return $this->renderHTML('dashboard/post.twig',$data);
   }
-
 }

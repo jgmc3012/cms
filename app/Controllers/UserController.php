@@ -48,7 +48,7 @@ class UserController extends BaseController
       'users' => $users
     ];
 
-    return $this->renderHTML('dashboard_users.twig',$data);
+    return $this->renderHTML('dashboard/users.twig',$data);
     }
 
     public function addUser(ServerRequest $request,ResponseInterface $handler) {

@@ -2,7 +2,6 @@
   namespace App\Controllers;
 
   use App\Models\CategoryModel;
-  use App\Models\UserModel;
   use Psr\Http\Message\ResponseInterface;
   use Respect\Validation\Rules;
   use Respect\Validation\Validator;
@@ -22,6 +21,7 @@
     public function activeRemoveCategory(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
         $id_category = $request->getAttribute('id');
+
         if (Validator::alnum()->numeric()->validate($id_category)) {
             $category  = CategoryModel::where('id_category','=',$id_category)->first();
             if ($category->category_active == 1) {
@@ -32,7 +32,7 @@
             $category->save();
             return $this->showCategories($request,$handler);
         } else {
-            throw new \Exception('Estas ingresando datos invalidos en el sistema', 400);
+            throw new \Exception('Estas ingresando datos invalidos en el sistema', 401);
         }
 
     }
@@ -42,11 +42,11 @@
     */
     public function showCategories(ServerRequest $request,ResponseInterface $handler, $data=[]):HtmlResponse
     {
-      $categories = CategoryModel::where('id_category', '>' ,'0')->orderBy('name','asc')->get();
+      $categories = CategoryModel::where('id_category', '>' ,'0')->orderBy('category_active','desc',',','name','asc')->get();
       $data = $data + [
         'categories' => $categories
       ];
-      return $this->renderHTML('dashboard_category.twig', $data);
+      return $this->renderHTML('dashboard/category.twig', $data);
     }
     /**
     *

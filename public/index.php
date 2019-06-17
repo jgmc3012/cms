@@ -63,14 +63,9 @@ $map->get('logout_user', '/logout-cms', [
     'logoutUser',
 ]);
 
-$map->get('posts', '/post', [
+$map->get('posts', '/post/{id}', [
   'App\Controllers\PostController',
-  'postAction',
-]);
-
-$map->get('post.layout', '/post-layout', [
-    'App\Controllers\PostController',
-    'postLayout',
+  'postShow',
 ]);
 
 $map->get('user.show', '/dashboard/users', [
@@ -120,7 +115,12 @@ $map->get('post.dashboard', '/dashboard/post', [
 
 $map->get('index', '/', [
     'App\Controllers\IndexController',
-    'dashboardPost',
+    'showIndex',
+]);
+
+$map->get('postsCategory', '/category/{name}', [
+    'App\Controllers\IndexController',
+    'showPostsCategory',
 ]);
 
 $matcher = $routerContainer->getMatcher();
