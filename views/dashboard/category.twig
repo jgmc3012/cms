@@ -11,6 +11,7 @@
     {% endif %}
     <button onclick="accordion('addCategory')" class="w3-button w3-block w3-teal">Agregar una nueva categoria</button>
     <div class="w3-hide w3-animation-opacity" id="addCategory">
+<<<<<<< HEAD
       <form class="" action="/dashboard/category/add" method="post" enctype="multipart/form-data">
 
         <input class="w3-input " type="text" placeholder="Nombre de la Categoria" name="category_name" required>
@@ -19,6 +20,12 @@
         <input class="w3-input" id="category_background" name="category_background" type="file">
         <input class="w3-button w3-margin-top w3-block w3-blue w3-holder-grey w3-margin-bottom" type="submit" class="w3-button" value="Agregar">
 
+=======
+      <form class="" action="/dashboard/category/add" method="post">
+        <input class="w3-input" type="text" placeholder="Nombre de la Categoria" name="category_name" required>
+        <textarea class="w3-input w3-border" name="category_description"rows="3" placeholder="Descripcion..." required style="resize:none"></textarea>
+        <input class="w3-button w3-block w3-blue w3-holder-grey w3-margin-bottom" type="submit" class="w3-button" value="Agregar">
+>>>>>>> 70936adbbc6ff59139e41dcb333f7c82798ef9f3
       </form>
     </div>
 
