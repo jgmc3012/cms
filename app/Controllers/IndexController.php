@@ -39,7 +39,7 @@ class IndexController extends BaseController
                     category.id_category = category_post.id_category
 				INNER JOIN user ON
 					post.id_owner = user.id_user                    
-                WHERE category.id_category = $category->id_category
+                WHERE (category.id_category = $category->id_category) AND (post.published = 1)
             ");
 
             return $this->renderHTML('public/posts_category.twig', [

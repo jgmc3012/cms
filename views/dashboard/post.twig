@@ -39,7 +39,7 @@
             <td class="w3-center">
               <a href="/post/{{- post.id_post }}" class="w3-medium">{{ post.title }}</a>
               <br/>
-              <a href="#" class="w3-blue w3-center w3-small">Editar</a>
+              <a href="/dashboard/modify-post/{{- post.id_post }}" class="w3-blue w3-center w3-small">Editar</a>
               <a href="#" class="w3-blue w3-center w3-small">Eliminar</a>
             </td>
             {% if post.published %}
@@ -61,7 +61,7 @@
             </td>
 
             <td class="w3-center" >
-              <span class="w3-medium"> <i class="fa fa-comment"> no se</i></span>
+              <span class="w3-medium"> <i class="fa fa-comment"> {{ post.comments }}</i></span>
             </td>
 
             <td class="w3-center" >
