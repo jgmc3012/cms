@@ -53,9 +53,9 @@
     */
     public function addCategory(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
-      $response = '';
-      $nameCategory = $request->getParsedBody()['category_name'];
-      $nameCategory = strtolower($nameCategory);
+      $postData = $request->getParsedBody();
+      $files = $request->getUploadedFiles();
+      //Validar Entradas
 
       $categoryValidator = new Rules\AllOf(
         new Rules\Alnum(),
@@ -63,16 +63,37 @@
         new Rules\Length(2, 15),
         new Rules\stringType()
       );
-      if ($categoryValidator->validate($nameCategory)) {
-        $category = new CategoryModel;
-        $category->name = $nameCategory;
-        $category->save();
-        $response = 'Nueva categoria Agregada exitosamente.';
+
+
+        $background = $files['category_background'];
+        $fileName = $background->getClientFileName();
+        $infoFile = new \SplFileInfo($fileName);
+        $extension = $infoFile->getExtension();
+
+        if ($categoryValidator->validate($postData['category_name'])) {
+
+          $category = new CategoryModel;
+          $category->name = strtolower($postData['category_name']);
+          $category->category_description = strtolower($postData['category_description']);
+
+          $category->save();
+
+          if($background->getError() == UPLOAD_ERR_OK) {
+
+            $filePath = "img/category/$postData[category_name].$extension";
+            $background->moveTo($filePath);
+            $category->category_background = $filePath;
+            $category->save();
+          }
+
+          $response = 'Nueva categoria Agregada exitosamente.';
+
       } else {
         $response = 'El nombre de la categoria no debe contener espacios ni caracteres especiales.
                     Y debe ser de un tamaño de entre 2 y 15 caracteres.';
       }
-      return $this->showCategories($request,$handler , [
+
+        return $this->showCategories($request,$handler , [
         'response' => $response,
       ]);
     }

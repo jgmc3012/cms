@@ -9,13 +9,17 @@
     <!-- Despliegue de las categorias disponibles para visitar -->
 
     {% for category in categories %}
-
-        <div class="w3-panel w3-red w3-center" style="padding:128px 16px">
-            <h1 class="w3-margin w3-jumbo">{{ category.name }}</h1>
-            <p class="w3-xlarge">Descripcion de la categoria</p>
-            <a href="/category/{{ category.name }}" class="w3-round-large    w3-button w3-black w3-padding-large w3-large w3-margin-top">Explorar {{ category.name }}</a>
+        <div class="w3-display-container" style="padding:200px 0px">
+            <img class="w3-opacity w3-blocks" src="{{ category.category_background }}"
+                 style="width: 100%; max-height: 550px; padding: 0px 0px; ">
+            <div class="w3-display-middle w3-container">
+                <h1 class="w3-margin w3-jumbo w3-center">{{ category.name }}</h1>
+                <p class="w3-xlarge w3-center">{{ category.category_description }}</p>
+                <a href="/category/{{ category.name }}" class="w3-round-large w3-button w3-black w3-padding-large
+                    w3-large w3-margin-top">Explorar {{ category.name }}</a>
+            </div>
         </div>
-
+        <hr/>
     {% endfor %}
 
 

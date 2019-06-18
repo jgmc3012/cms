@@ -1,0 +1,71 @@
+{% extends 'dashboard/dashboard.twig' %}
+{% block head %}
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5.0.7-44/tinymce.min.js"></script>
+    <script>tinymce.init({selector:'textarea'});</script>
+{% endblock %}
+{% block page_content %}
+    <div class="w3-container">
+        <div class="w3-panel">
+            <h1 class="w3-center"> Nueva Entrada/Publicacion</h1>
+        </div>
+        <div class="w3-container">
+
+            <form action="" method="post" >
+                <div class="w3-container">
+
+                    <div class="w3-threequarter w3-panel">
+                        <label for="title">Titutlo</label>
+                        <input required class="w3-input w3-margin-top" type="text" id="title" name="post_title" value="{{ post.title }}">
+                    </div>
+
+                    <div class="w3-quarter w3-panel">
+
+                        <label for="categories">Categoria</label>
+
+                        <select class="w3-input w3-margin-top w3-border" name="post_category" id="categories"  >
+
+                            {% for category in categories %}
+                                <option value="{{ category.id_category }}">{{ category.name }}</option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+                <hr/>
+                <div class="w3-bar">
+                    <div class="w3-bar-item">
+                        <input class="w3-button w3-black" type="submit"  id="Guardar" value="Guardar">
+                    </div>
+
+                    <div class="w3-bar-item">
+                        <input class="w3-button w3-black" type="submit" value="Previsualizar" formaction="/dashboard/view-post"
+                            formtarget="_blank">
+                    </div>
+
+                    <div class="w3-bar-item">
+                        {% if post.id %}
+                            {% set uri = post.id %}
+                    <!-- La variable 'text_body' es creada para evitar un bug con panel que estamos usando para el textarea -->
+                            {% set text_body =  post.body  %}
+                        {% else %}
+                            {% set uri = 'new' %}
+                            {% set text_body = ' ' %}
+                        {% endif %}
+                        <input class="w3-button w3-orange" type="submit" value="Publicar"
+                               formaction="/dashboard/public-post/{{ uri }}">
+
+                    </div>
+
+                </div>
+                <hr/>
+                <div class="w3-container">
+                    <textarea required class="w3-input w3-border" placeholder="Contenido de la publicacion..."
+                              name="post_body" rows="20" style="resize: none" >{{ text_body }}</textarea>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

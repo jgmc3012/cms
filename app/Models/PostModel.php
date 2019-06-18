@@ -18,5 +18,5 @@ class PostModel extends Model
   */
   protected $primaryKey = 'id_post';
   const CREATED_AT = 'date_created';
-  const UPDATED_AT = 'date_updated';
+  const UPDATED_AT = 'date_modified';
 }

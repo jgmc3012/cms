@@ -7,7 +7,6 @@ require_once '../vendor/autoload.php';
 
 session_start();
 
-use Middlewares\AuraRouter;
 use WoohooLabs\Harmony\Harmony;
 use WoohooLabs\Harmony\Middleware\DispatcherMiddleware;
 use WoohooLabs\Harmony\Middleware\HttpHandlerRunnerMiddleware;
@@ -16,6 +15,7 @@ use Aura\Router\RouterContainer;
 use Zend\Diactoros\Response;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Middlewares\AuthenticationMiddleware;
+
 $container = new DI\Container();
 
 $capsule = new Capsule;
@@ -121,6 +121,38 @@ $map->get('index', '/', [
 $map->get('postsCategory', '/category/{name}', [
     'App\Controllers\IndexController',
     'showPostsCategory',
+]);
+
+$map->get('postNew', '/dashboard/new-post', [
+    'App\Controllers\PostController',
+    'newPost',
+]);
+
+
+$map->post('postNewContent', '/dashboard/new-post', [
+    'App\Controllers\PostController',
+    'newPostRequest',
+]);
+
+
+$map->get('postModify', '/dashboard/modify-post/{id}', [
+    'App\Controllers\PostController',
+    'modifyPost',
+]);
+
+$map->post('postModifyContent', '/dashboard/modify-post/{id}', [
+    'App\Controllers\PostController',
+    'modifyPostRequest',
+]);
+
+$map->post('postPreview', '/dashboard/view-post', [
+    'App\Controllers\PostController',
+    'postPreview',
+]);
+
+$map->post('postPublic', '/dashboard/public-post/{id}', [
+    'App\Controllers\PostController',
+    'postPublic',
 ]);
 
 $matcher = $routerContainer->getMatcher();
