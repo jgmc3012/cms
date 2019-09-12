@@ -43,16 +43,18 @@
                         <input class="w3-button w3-black" type="submit" value="Previsualizar" formaction="/dashboard/view-post"
                             formtarget="_blank">
                     </div>
+                    
+                    <!-- Este bloque de codigo se encarga de elegir la uri que sera escrita porteriomente en el boton de publicar-->
+                    {% if post.id %}
+                        {% set uri = post.id %}
+                    <!-- La variable 'text_body' es creada para evitar un bug con el panel que estamos usando para el textarea -->
+                        {% set text_body =  post.body  %}
+                    {% else %}
+                        {% set uri = 'new' %}
+                        {% set text_body = ' ' %}
+                    {% endif %}
 
                     <div class="w3-bar-item">
-                        {% if post.id %}
-                            {% set uri = post.id %}
-                    <!-- La variable 'text_body' es creada para evitar un bug con panel que estamos usando para el textarea -->
-                            {% set text_body =  post.body  %}
-                        {% else %}
-                            {% set uri = 'new' %}
-                            {% set text_body = ' ' %}
-                        {% endif %}
                         <input class="w3-button w3-orange" type="submit" value="Publicar"
                                formaction="/dashboard/public-post/{{ uri }}">
 

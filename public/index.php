@@ -22,8 +22,8 @@ $capsule = new Capsule;
 
 $capsule->addConnection([
     'driver'    => 'mysql',
-    'host'      => 'localhost',
-    'port'      => '3307',
+    'host'      => 'mysql',
+    'port'      => '3306',
     'database'  => 'development_cms',
     'username'  => 'root',
     'password'  => 'tiger',

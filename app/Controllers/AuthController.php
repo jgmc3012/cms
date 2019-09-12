@@ -35,14 +35,13 @@ class AuthController extends BaseController
       if (Validator::email()->validate($postData['user_email'])) {
 
           $user = UserModel::select('*')
-              ->join('cms_rol', 'user.id_rol', '=', 'cms_rol.id_rol')
+              ->join('rol', 'user.id_rol', '=', 'rol.id_rol')
               ->where('email','=',$postData['user_email'])
               ->orderBy('first_name','asc')
               ->first();
 
         if ($user) {
-          //if (password_verify($postData['user_password'], $user->password)) {
-          if ($user->password == $postData['user_password']) {
+          if (password_verify($postData['user_password'], $user->password)) {
 
             unset($_SESSION['user']);
             $_SESSION['user'] = [
@@ -50,9 +49,9 @@ class AuthController extends BaseController
                 'first_name'    =>  $user->first_name,
                 'last_name'     =>  $user->last_name,
                 'id_rol'        =>  $user->id_rol,
-                'user_name'     =>  $user->user_name,
+                'nickname'     =>  $user->nickname,
                 'avatar'        =>  $user->avatar,
-                'name_rol'      =>  $user->name_rol,
+                'name_rol'      =>  $user->name_rol
             ];
              $response = new RedirectResponse('/dashboard/overview');
           } else {

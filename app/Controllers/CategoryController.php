@@ -61,7 +61,7 @@
         new Rules\Alnum(),
         new Rules\NoWhitespace(),
         new Rules\Length(2, 15),
-        new Rules\stringType()
+        new Rules\StringType()
       );
 
 

@@ -22,7 +22,7 @@ class UserController extends BaseController
     $this->stringValidator = new Rules\AllOf(
       new Rules\Alnum(),
       new Rules\Length(2, 20),
-      new Rules\stringType()
+      new Rules\StringType()
     );
 
   }
@@ -34,10 +34,10 @@ class UserController extends BaseController
     */
     public function showUsers(ServerRequest $request,ResponseInterface $handler):HtmlResponse
     {
-    $users = Manager::select('SELECT user.id_user, user.access_admin, user.id_rol , user.first_name, user.last_name, cms_rol.name_rol, count(post.id_owner) AS tickets
+    $users = Manager::select('SELECT user.id_user, user.access_admin, user.id_rol , user.first_name, user.last_name, rol.name_rol, count(post.id_owner) AS tickets
                             FROM user 
-                                INNER JOIN cms_rol ON 
-                                user.id_rol = cms_rol.id_rol
+                                INNER JOIN rol ON 
+                                user.id_rol = rol.id_rol
                                 LEFT JOIN post ON 
                                 user.id_user = post.id_owner
                             GROUP BY user.id_user
@@ -64,6 +64,10 @@ class UserController extends BaseController
         $user->last_name = strtolower($new_user['user_last_name']);
         $user->id_rol = $new_user['user_rol'];
         $user->email = $new_user['user_email'];
+
+        $pos = strpos($user->email,'@');
+        $user->nickname = substr($user->email,0,$pos);
+        
         $user->password = password_hash($new_user['user_password'], PASSWORD_DEFAULT);
         $user->avatar = '/img/users/default.png';
         $user->save();

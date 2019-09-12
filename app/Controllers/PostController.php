@@ -70,16 +70,19 @@ class PostController extends BaseController
 
         //Validar Entradas
         $requestData = $request->getParsedBody();
-        $visible = $data['published'] ?? null;
+        $visible = $data['published'] ?? 0;
 
         $post = new PostModel;
         $post->title    = $requestData['post_title'];
         $post->body     = $requestData['post_body'];
         $post->id_owner = $_SESSION['user']['id_user'];
-        if ($visible != null)
+        if ($visible == 0)
         {
-            $post->published = $visible;
+            $post->published = 0;
+        }else {
+            $post->published = 1;
         }
+
         $post->save();
         Manager::insert('
             INSERT INTO category_post
@@ -110,6 +113,7 @@ class PostController extends BaseController
                 $data = [
                     'post'  => $post,
                 ];
+
                 return $this->newPost($request,null,$data);
             }
         }
@@ -155,6 +159,7 @@ class PostController extends BaseController
     {
         $idPost = $request->getAttribute('id');
         $data = ['published' => 1];
+
         if (Validator::intVal()->positive()->validate($idPost))
         {
             return $this->modifyPostRequest($request,null,$data);
@@ -168,7 +173,7 @@ class PostController extends BaseController
 
     public function dashboardPost():HtmlResponse
     {
-      $posts = Manager::select('SELECT category.name AS category_name, post.id_post, post.title, post.published, user.id_user AS 
+        $posts = Manager::select('SELECT category.name AS category_name, post.id_post, post.title, post.published, user.id_user AS 
                                     id_owner, user.first_name, user.last_name, DATE(post.date_created) AS date, post.visits,
                                     COUNT(comment.id_post) AS comments
                                 FROM post
@@ -180,8 +185,9 @@ class PostController extends BaseController
                                         category_post.id_category = category.id_category
                                     LEFT JOIN comment ON 
                                         post.id_post = comment.id_post
-                                GROUP BY post.id_post	    
+                                GROUP BY post.id_post, category.id_category	    
                                 ORDER BY post.id_post ASC');
+
 
       $data = [
           'posts'    => $posts,

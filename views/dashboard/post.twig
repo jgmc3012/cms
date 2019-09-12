@@ -42,7 +42,7 @@
               <a href="/dashboard/modify-post/{{- post.id_post }}" class="w3-blue w3-center w3-small">Editar</a>
               <a href="#" class="w3-blue w3-center w3-small">Eliminar</a>
             </td>
-            {% if post.published %}
+            {% if post.published  == 1 %}
               {% set status = 'Publicado' %}
             {% else %}
               {% set status = 'Borrador' %}
