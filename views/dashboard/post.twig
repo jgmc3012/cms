@@ -40,7 +40,7 @@
               <a href="/post/{{- post.id_post }}" class="w3-medium">{{ post.title }}</a>
               <br/>
               <a href="/dashboard/modify-post/{{- post.id_post }}" class="w3-blue w3-center w3-small">Editar</a>
-              <a href="#" class="w3-blue w3-center w3-small">Eliminar</a>
+              <a href="/dashboard/delete-post/{{- post.id_post -}}" class="w3-blue w3-center w3-small">Eliminar</a>
             </td>
             {% if post.published  == 1 %}
               {% set status = 'Publicado' %}

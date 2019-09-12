@@ -155,6 +155,12 @@ $map->post('postPublic', '/dashboard/public-post/{id}', [
     'postPublic',
 ]);
 
+$map->get('postDelete', '/dashboard/delete-post/{id}', [
+  'App\Controllers\PostController',
+  'postDelete',
+]);
+
+
 $matcher = $routerContainer->getMatcher();
 $route = $matcher->match($request);
 

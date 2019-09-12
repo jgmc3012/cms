@@ -194,4 +194,27 @@ class PostController extends BaseController
       ];
       return $this->renderHTML('dashboard/post.twig',$data);
     }
+
+    public function postDelete(ServerRequest $request)
+    {
+        //Falta validar entrada
+        $id = intval($request->getAttribute('id'));
+        $post = Manager::select("SELECT post.id_post, post.id_owner, user.id_rol AS rol_user
+                                FROM post
+                                INNER JOIN user ON
+                                    post.id_owner = user.id_user
+                                WHERE post.id_post = $id");     
+        if (($_SESSION['user']['id_user'] == $post[0]->id_owner) OR ($_SESSION['user']['id_rol'] <= $post[0]->rol_user))
+        {
+            $res = PostModel::where('id_post','=',$post[0]->id_post)->get();
+            if ($res[0]) 
+            {
+                $post =  Manager::delete("DELETE FROM category_post
+                                        WHERE id_post = $id");
+                $res[0]->delete();
+            }
+        }
+        return new RedirectResponse('/dashboard/overview');
+        
+    }
 }
